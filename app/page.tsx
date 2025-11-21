@@ -1,10 +1,11 @@
-import NavBar from "@/src/components/NavBar";
-import Image from "next/image";
+import { Dock, NavBar, Welcome } from "@/src/components";
 
 export default function Home() {
   return (
-    <>
-    <NavBar/>
-    </>
+    <main>
+      <NavBar/>
+      <Welcome/>
+      <Dock/>
+    </main>
   );
 }
