@@ -3,13 +3,21 @@ import { useRef } from 'react'
 import { dockApps } from '../constants';
 import { Tooltip } from 'react-tooltip';
 import useDockAnim from '../animations/useDockAnim';
+import useWindowStore from '../store/window';
 
 function Dock() {
     const dockRef = useRef<HTMLDivElement>(null);
+    const {closeWindow, openWindow, windows} = useWindowStore();
 
     useDockAnim(dockRef);
 
-    const toggleApp = (id: string, canOpen: boolean) => {}
+    const toggleApp = (id: string, canOpen: boolean) => {
+        if(!canOpen) return;
+        const window = windows[id as keyof typeof windows];
+
+        if(window.isOpen) closeWindow(id as keyof typeof windows);
+        else openWindow(id as keyof typeof windows);
+    }
 
     return (
         <section id="dock">
