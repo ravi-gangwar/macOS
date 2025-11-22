@@ -1,5 +1,6 @@
 "use client"
 import React, { useRef } from 'react'
+import { useTextSize } from '../hooks/useTextSize'
 
 const renderText = (text: string, className: string, baseWeight: number) => {
     return [...text].map((char, index) => (
@@ -16,11 +17,12 @@ const renderText = (text: string, className: string, baseWeight: number) => {
 function Welcome() {
     const titleRef = useRef(null);
     const subtitleRef = useRef(null);
+    const { getTextSize } = useTextSize();
 
     return (
         <section id="welcome">
-            <p ref={subtitleRef}>{renderText("Portfolio", "text-3xl font-georama", 100)}</p>
-            <h1 className='mt-7' ref={titleRef}>{renderText("I am Ravi Gangwar", "sm:text-4xl md:text-6xl text-9xl italic font-georama", 100)}</h1>
+            {/* <p ref={subtitleRef} className={getTextSize('3xl')}>{renderText("Portfolio", "font-georama", 100)}</p>
+            <h1 className={`mt-7 ${getTextSize('4xl')} italic font-georama`} ref={titleRef}>{renderText("I am Ravi Gangwar", "", 100)}</h1> */}
         </section>
     )
 }

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import DarkThemeProvider from "@/src/components/DarkThemeProvider";
+import ThemeScript from "@/src/components/ThemeScript";
 
 
 
@@ -15,11 +17,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body
         className={`antialiased`}
       >
-        {children}
+        <DarkThemeProvider>
+          {children}
+        </DarkThemeProvider>
       </body>
     </html>
   );

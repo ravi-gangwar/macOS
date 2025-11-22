@@ -493,14 +493,15 @@ const navLinks = [
   const INITIAL_Z_INDEX = 1000;
   
   const WINDOW_CONFIG = {
-    finder: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-    contact: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-    resume: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-    safari: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-    photos: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-    terminal: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-    txtfile: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
-    imgfile: { isOpen: false, zIndex: INITIAL_Z_INDEX, data: null },
+    finder: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
+    contact: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
+    resume: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
+    safari: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
+    photos: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
+    terminal: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
+    settings: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
+    txtfile: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
+    imgfile: { isOpen: false, isClosing: false, isMinimized: false, zIndex: INITIAL_Z_INDEX, x: 0, y: 0, data: null },
   };
   
   export { INITIAL_Z_INDEX, WINDOW_CONFIG };
