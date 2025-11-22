@@ -137,6 +137,14 @@ html.dark body {
       @apply flex items-center gap-6 max-sm:w-full max-sm:justify-center;
     }
 
+    .nav-center {
+      @apply flex-1 flex items-center justify-center;
+    }
+
+    .nav-center-text {
+      @apply font-normal text-sm text-gray-800 dark:text-gray-200;
+    }
+
     .nav-apple-menu {
       @apply flex items-center gap-2 relative;
     }
@@ -146,6 +154,10 @@ html.dark body {
       @apply flex items-center justify-center;
       @apply text-gray-800 dark:text-gray-200 opacity-90 hover:opacity-100;
       @apply border-0 outline-none;
+    }
+
+    .nav-apple-text-btn {
+      @apply border-0 outline-none bg-transparent p-0 cursor-pointer;
     }
 
     .nav-apple-text {

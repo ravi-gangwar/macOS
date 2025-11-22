@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
 
@@ -23,9 +23,32 @@ export default function useBootAnimation({
   const containerRef = useRef<HTMLDivElement>(null)
   const logoRef = useRef<HTMLDivElement>(null)
   const progressBarRef = useRef<HTMLDivElement>(null)
+  const animationStartedRef = useRef(false)
+
+  // Reset animation state when isActive changes
+  useEffect(() => {
+    if (isActive) {
+      animationStartedRef.current = false
+      setProgress(direction === 'boot' ? 0 : 100)
+    }
+  }, [isActive, direction])
 
   useGSAP(() => {
-    if (!isActive || !containerRef.current || !logoRef.current || !progressBarRef.current) return
+    if (!isActive) {
+      animationStartedRef.current = false
+      return
+    }
+    
+    if (!containerRef.current || !logoRef.current || !progressBarRef.current) {
+      return
+    }
+
+    // Prevent multiple animations
+    if (animationStartedRef.current) {
+      return
+    }
+    
+    animationStartedRef.current = true
 
     if (direction === 'boot') {
       // Boot animation: 0% -> 10% -> 30% -> 40% -> 70% -> 100%
@@ -40,14 +63,16 @@ export default function useBootAnimation({
         ease: 'power2.out',
       })
 
-      // Progress bar animation
+      // Progress bar animation: 0% -> 10% -> 30% -> 40% -> 60% -> 70% -> 100% (5 seconds total)
       const progressObj = { value: 0 }
       const progressTimeline = gsap.timeline()
       
+      // Total duration: 5 seconds
+      // Chunks: 10, 30, 40, 60, 70, 100
       progressTimeline
         .to(progressObj, {
           value: 10,
-          duration: 0.6,
+          duration: 0.5, // 0.5s
           ease: 'power1.out',
           onUpdate: function() {
             setProgress(progressObj.value)
@@ -55,7 +80,7 @@ export default function useBootAnimation({
         })
         .to(progressObj, {
           value: 30,
-          duration: 0.8,
+          duration: 0.8, // 0.8s (total: 1.3s)
           ease: 'power1.out',
           onUpdate: function() {
             setProgress(progressObj.value)
@@ -63,7 +88,15 @@ export default function useBootAnimation({
         })
         .to(progressObj, {
           value: 40,
-          duration: 0.4,
+          duration: 0.4, // 0.4s (total: 1.7s)
+          ease: 'power1.out',
+          onUpdate: function() {
+            setProgress(progressObj.value)
+          }
+        })
+        .to(progressObj, {
+          value: 60,
+          duration: 0.8, // 0.8s (total: 2.5s)
           ease: 'power1.out',
           onUpdate: function() {
             setProgress(progressObj.value)
@@ -71,7 +104,7 @@ export default function useBootAnimation({
         })
         .to(progressObj, {
           value: 70,
-          duration: 1.0,
+          duration: 0.5, // 0.5s (total: 3.0s)
           ease: 'power1.out',
           onUpdate: function() {
             setProgress(progressObj.value)
@@ -79,23 +112,25 @@ export default function useBootAnimation({
         })
         .to(progressObj, {
           value: 100,
-          duration: 0.7,
+          duration: 2.0, // 2.0s (total: 5.0s)
           ease: 'power1.out',
           onUpdate: function() {
             setProgress(progressObj.value)
           },
           onComplete: () => {
-            if (autoFadeOut) {
+            if (autoFadeOut && containerRef.current) {
               gsap.to(containerRef.current, {
                 opacity: 0,
                 duration: 0.5,
                 delay: fadeOutDelay,
                 ease: 'power2.in',
                 onComplete: () => {
+                  animationStartedRef.current = false
                   onComplete?.()
                 }
               })
             } else {
+              animationStartedRef.current = false
               onComplete?.()
             }
           }
@@ -157,6 +192,7 @@ export default function useBootAnimation({
             setProgress(progressObj.value)
           },
           onComplete: () => {
+            animationStartedRef.current = false
             onComplete?.()
           }
         })

@@ -1,6 +1,6 @@
 "use client"
-import { useState, useRef, useEffect } from 'react'
-import { Power, Lock, RotateCcw } from 'lucide-react'
+import { useRef } from 'react'
+import { Power, Lock, RotateCcw, LucideIcon } from 'lucide-react'
 import { useTextSize } from '../hooks/useTextSize'
 import useSettingsStore from '../store/settings'
 import { useGSAP } from '@gsap/react'
@@ -13,8 +13,32 @@ interface AppleMenuProps {
   onLock: () => void
 }
 
-export default function AppleMenu({ isOpen, onClose, onRestart, onLock }: AppleMenuProps) {
+interface MenuItemProps {
+  icon: LucideIcon
+  label: string
+  onClick: () => void
+}
+
+function MenuItem({ icon: Icon, label, onClick }: MenuItemProps) {
   const { getTextSize } = useTextSize()
+
+  return (
+    <button
+      type="button"
+      className="w-full flex items-center gap-3 px-3 py-1.5 text-left transition-colors duration-150 cursor-pointer text-gray-900 dark:text-gray-100 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 border-0 bg-transparent rounded-sm mx-1 group"
+      onClick={onClick}
+    >
+      <Icon className="w-4 h-4 shrink-0 text-gray-600 dark:text-gray-300 transition-colors" />
+      <span className={`${getTextSize('sm')} font-normal`}>{label}</span>
+    </button>
+  )
+}
+
+function MenuSeparator() {
+  return <div className="h-px my-1 mx-2 bg-gray-300/50 dark:bg-gray-600/50 border-0" />
+}
+
+export default function AppleMenu({ isOpen, onClose, onRestart, onLock }: AppleMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null)
   const { setTextSize, setDarkTheme, setBrightness } = useSettingsStore()
 
@@ -51,8 +75,8 @@ export default function AppleMenu({ isOpen, onClose, onRestart, onLock }: AppleM
     // Close menu
     onClose()
     
-    // Trigger restart (show boot screen)
-    onRestart()
+    // Trigger restart animation
+    window.dispatchEvent(new CustomEvent('macos-restart'))
   }
 
   const handleShutdown = () => {
@@ -74,38 +98,17 @@ export default function AppleMenu({ isOpen, onClose, onRestart, onLock }: AppleM
   return (
     <div
       ref={menuRef}
-      className="absolute top-full left-0 mt-1 z-[10003] min-w-[200px] py-2 rounded-xl overflow-hidden bg-white/80 dark:bg-gray-900/80 border border-white/20 dark:border-gray-700/30 shadow-2xl"
+      className="absolute top-full left-0 mt-2 z-[10003] min-w-[200px] py-1 rounded-lg overflow-hidden pointer-events-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl backdrop-saturate-150 border border-black/10 dark:border-white/10 shadow-lg shadow-black/15 ring-1 ring-white/50 dark:ring-white/10"
       style={{
         backdropFilter: 'blur(20px) saturate(180%)',
         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-        boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.15), 0 1px 0 0 rgba(255, 255, 255, 0.3) inset'
       }}
+      onClick={(e) => e.stopPropagation()}
     >
-        <button
-          type="button"
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all cursor-pointer text-gray-900 dark:text-gray-100 hover:bg-blue-500/90 hover:text-white dark:hover:bg-blue-600/90 border-0 bg-transparent rounded-md mx-1 active:scale-[0.98]"
-          onClick={handleRestart}
-        >
-          <RotateCcw className="w-4 h-4 flex-shrink-0" />
-          <span className={getTextSize('sm')}>Restart</span>
-        </button>
-        <button
-          type="button"
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all cursor-pointer text-gray-900 dark:text-gray-100 hover:bg-blue-500/90 hover:text-white dark:hover:bg-blue-600/90 border-0 bg-transparent rounded-md mx-1 active:scale-[0.98]"
-          onClick={handleShutdown}
-        >
-          <Power className="w-4 h-4 flex-shrink-0" />
-          <span className={getTextSize('sm')}>Shut Down</span>
-        </button>
-        <div className="h-px my-1 mx-2 bg-gray-300/50 dark:bg-gray-600/50 border-0" />
-        <button
-          type="button"
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all cursor-pointer text-gray-900 dark:text-gray-100 hover:bg-blue-500/90 hover:text-white dark:hover:bg-blue-600/90 border-0 bg-transparent rounded-md mx-1 active:scale-[0.98]"
-          onClick={handleLock}
-        >
-          <Lock className="w-4 h-4 flex-shrink-0" />
-          <span className={getTextSize('sm')}>Lock Screen</span>
-        </button>
+      <MenuItem icon={RotateCcw} label="Restart" onClick={handleRestart} />
+      <MenuItem icon={Power} label="Shut Down" onClick={handleShutdown} />
+      <MenuSeparator />
+      <MenuItem icon={Lock} label="Lock Screen" onClick={handleLock} />
     </div>
   )
 }
